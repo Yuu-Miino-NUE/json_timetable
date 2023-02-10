@@ -1,0 +1,72 @@
+[
+    {
+        "year": 2023,
+        "time": [
+            {
+                "semester": "前",
+                "day": "月",
+                "period": [1, 2]
+            },
+            {
+                "semester": "前",
+                "day": "木",
+                "period": [3, 4]
+            }
+        ],
+        "lecturers": ["曽根", "阪東", "美井野", "曽根", "阪東", "美井野"],
+        "subject": 20230001,
+        "room": "B101"
+    },
+    {
+        "year": 2024,
+        "time": [
+            {
+                "semester": "後",
+                "day": "水",
+                "period": [1]
+            }
+        ],
+        "lecturers": ["阪東"],
+        "subject": 20230002,
+        "room": "教育用端末室"
+    },
+    {
+        "year": 2024,
+        "time": [
+            {
+                "semester": "前",
+                "day": "金",
+                "period": [2]
+            }
+        ],
+        "lecturers": ["美井野"],
+        "subject": 20230003,
+        "room": "B102"
+    },
+    {
+        "year": 2023,
+        "time": [
+            {
+                "semester": "前",
+                "day": "月",
+                "period": [3, 4]
+            }
+        ],
+        "lecturers": ["美井野"],
+        "subject": 20230004,
+        "room": "B101"
+    },
+    {
+        "year": 2023,
+        "time": [
+            {
+                "semester": "前",
+                "day": "火",
+                "period": [5]
+            }
+        ],
+        "lecturers": ["曽根"],
+        "subject": 20230005,
+        "room": "B203"
+    }
+]

@@ -1,0 +1,20 @@
+[
+    {
+        "year": 2023,
+        "time": [
+            {
+                "semester": "前",
+                "day": "月",
+                "period": [1, 2]
+            },
+            {
+                "semester": "前",
+                "day": "木",
+                "period": [3, 4]
+            }
+        ],
+        "lecturers": ["曽根", "阪東", "美井野"],
+        "subject": 20230001,
+        "room": "B101"
+    }
+]
