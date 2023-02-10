@@ -1,38 +1,57 @@
 /* グローバル変数 */
 var json = [];
+var radio_state = null;
 const semesters = ['前', '後'];
 const days = ['月', '火', '水', '木', '金'];
 const periods = [1, 2, 3, 4, 5];
 
 /* ウィンドウ読み込み時の処理 */
 window.onload = function () {
-    /* HTML 文字列設定 */
-    const fileInput =
-        '<div class="mb-4">'+
-        '<input class="form-control" type="file" id="formFile" accept=".json" hidden multiple>'+
-        '<button class="btn btn-primary" style="width: 120pt" id="btnUploadFile" onclick="handleClickUpload()">'+
-        '<i class="bi bi-file-earmark-arrow-up"></i> アップロード</button>'+
-        '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>'+
-        '<div class="text-warning py-3" id="jsonWarn"></div>'
-        '</div>';
-
-    const radiosLabels = ['<i class="bi bi-list-ul"></i> リスト表示', '<i class="bi bi-calendar3"></i> カレンダー表示'];
-    const radios = radiosLabels.map((value, index,)=>(
-        '<input type="radio" class="btn-check" name="btnradio" id="btnradio'+index+'" autocomplete="off"'+(index==0?' checked':'')+'>'+
-        '<label class="btn btn-outline-secondary" for="btnradio'+index+'" style="width: 120pt">'+value+'</label>'
-    )).join('');
-    const radioGroup = '<div class="btn-group mb-4 d-none" id="radioGroup" role="group">'+radios+'</div>';
-
-    var html = fileInput + radioGroup;
-
-    /* DOM を使用して HTML を書き換え */
-    document.getElementById('control').innerHTML = html;
+    /* HTML を準備 */
+    writeFileInput();
+    writeFileOperate();
+    writeRadios();
 
     /* DOM にイベントリスナを設定 */
     document.getElementById("formFile").addEventListener("change", handleUploadFile);
     document.querySelectorAll("input[name='btnradio']").forEach((dom)=>(
         dom.addEventListener('change', handleRadioChange)
     ));
+}
+
+/* ファイルアップロード用 HTML を準備 */
+function writeFileInput () {
+    const fileInput =
+        '<input class="form-control" type="file" id="formFile" accept=".json" hidden multiple>'+
+        '<button class="btn btn-primary" style="width: 120pt" id="btnUploadFile" onclick="handleClickUpload()">'+
+        '<i class="bi bi-file-earmark-arrow-up me-1"></i>アップロード</button>'+
+        '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>';
+    document.getElementById('fileUpload').innerHTML = fileInput;
+}
+
+/* ファイル操作用 HTML を準備 */
+function writeFileOperate () {
+    const fileOperate =
+        '<button class="btn btn-outline-primary me-3" id="btnAddFile" onclick="handleClickUpload()">'+
+        '<i class="bi bi-file-earmark-plus-fill me-1"></i>ファイル追加</button>'+
+        '<button class="btn btn-outline-secondary me-3" id="btnDownloadFile" onclick="handleClickDownload()">'+
+        '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>ファイル保存</button>'+
+        '<button class="btn btn-outline-danger" id="btnResetJson" onclick="handleResetJSON()">'+
+        '<i class="bi bi-trash-fill me-1"></i>リセット</button>'+
+        '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>';
+    document.getElementById('fileOperate').innerHTML = fileOperate;
+}
+
+/* ラジオボタン用 HTML を準備 */
+function writeRadios () {
+    const radiosLabels = ['<i class="bi bi-list-ul me-1"></i>リスト表示', '<i class="bi bi-calendar3 me-1"></i>カレンダー表示'];
+    const radios = radiosLabels.map((value, index,)=>(
+        '<input type="radio" class="btn-check" name="btnradio" id="btnradio'+index+'" autocomplete="off"'+(index==0?' checked':'')+'>'+
+        '<label class="btn btn-outline-secondary" for="btnradio'+index+'" style="width: 120pt">'+value+'</label>'
+    )).join('');
+    radio_state = 0;
+    const radiosGroup = '<div class="btn-group mb-4" role="group">'+radios+'</div>';
+    document.getElementById('radiosGroup').innerHTML = radiosGroup;
 }
 
 /* ボタンクリックでファイルアップロードのイベントをトリガ */
@@ -54,7 +73,6 @@ function handleUploadFile(event) {
             try {
                 json.push(...JSON.parse(e.target.result));
                 setUpJSON();
-                document.getElementById("radioGroup").classList.remove("d-none");
                 formFile.classList.remove('is-invalid');
             } catch (err) {
                 console.log('invalid-json');
@@ -67,12 +85,40 @@ function handleUploadFile(event) {
     event.target.value = null;
 }
 
+/* ボタンクリックでファイルダウンロードのイベントをトリガ */
+function handleClickDownload() {
+    var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(json));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", "timetable.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+function handleResetJSON () {
+    json = [];
+    showHTML('fileUpload');
+    hideHTML('fileOperate');
+    hideHTML('radiosGroup');
+    hideHTML('list');
+    hideHTML('calendar');
+}
+
 /* 変数：json が更新されたときの処理まとめ */
 function setUpJSON(){
     checkJSON();
     jsonList();
     jsonCalendar();
-    makeModals();
+    writeModals();
+    hideHTML('fileUpload');
+    showHTML('fileOperate');
+    showHTML('radiosGroup');
+    switch (radio_state) {
+        case 0: showHTML('list'); break;
+        case 1: showHTML('calendar'); break;
+        default: break;
+    }
 }
 
 /* JSON が様式に合うかざっくりチェック */
@@ -93,6 +139,11 @@ function checkJSON(){
         })
     });
     document.getElementById('jsonWarn').innerHTML = warnMsg;
+    if (warnMsg.length > 0) {
+        showHTML('jsonWarn');
+    } else {
+        hideHTML('jsonWarn');
+    }
 }
 
 /* JSON からリストを表示 */
@@ -125,8 +176,44 @@ function jsonList() {
         }).join('')+
         '</tr>'
     )).join('')+'</tbody>';
+    const timeSortBtn = '<button class="btn btn-outline-secondary me-3" onclick="timeSortJSON()">時系列順</button>'
+    const subjectSortBtn = '<button class="btn btn-outline-secondary" onclick="subjectSortJSON()">科目番号順</button>'
 
-    document.getElementById('list').innerHTML = '<table class="table table-hover">' + listHeader + listBody + '</table>';
+    document.getElementById('list').innerHTML = '<div class="mb-3">'+timeSortBtn+subjectSortBtn+'</div>'+
+    '<table class="table table-hover">' + listHeader + listBody + '</table>';
+}
+
+/* 時系列ソート */
+function timeSortJSON() {
+    json.sort((a, b)=>{
+        const amin = Math.min([...new Set(a.time.map(r=>r.day))].map(r=>days.indexOf(r)));
+        const bmin = Math.min([...new Set(b.time.map(r=>r.day))].map(r=>days.indexOf(r)));
+        if (amin > bmin) return 1;
+        if (amin == bmin) return 0;
+        if (amin < bmin) return -1;
+    }).sort((a, b)=>{
+        if (a.time.some(r=>r.semester == '前') && !b.time.some(r=>r.semester == '前')) {
+            return -1;
+        }
+        if (!a.time.some(r=>r.semester == '前') && b.time.some(r=>r.semester == '前')) {
+            return 1;
+        }
+        return 0;
+    }).sort((a, b)=>{
+        if (a.year > b.year) return 1;
+        if (a.year == b.year) return 0;
+        if (a.year < b.year) return -1;
+    });
+    setUpJSON();
+}
+/* 科目番号ソート */
+function subjectSortJSON() {
+    json.sort((a, b)=>{
+        if (a.subject > b.subject) return 1;
+        if (a.subject == b.subject) return 0;
+        if (a.subject < b.subject) return -1;
+    })
+    setUpJSON();
 }
 
 /* JSON からカレンダーを表示 */
@@ -147,7 +234,7 @@ function jsonCalendar() {
                 '<div class="col-1 border d-flex align-items-center justify-content-center text-light bg-secondary">'+p+'</div>'+
                 '<div class="col-11 row">'+
                 days.map(d=>(
-                    '<div class="col border p-2">'+
+                    '<div class="col border p-0">'+
                     [...json.keys()].filter(k=>
                         (json[k].year==y && json[k].time.some(jt=>jt.semester==s && jt.day==d && jt.period.includes(p)))
                     ).map(k=>subjectInCal(json[k], k)).join('')+'</div>'
@@ -160,10 +247,10 @@ function jsonCalendar() {
 }
 
 /* JSON 編集画面の設置 */
-function makeModals(){
+function writeModals(){
     const modals = json.map((j, i)=>(
         '<div class="modal fade" id="modal'+i+'" tabindex="-1" aria-labelledby="modalH5_'+i+'" aria-hidden="true">'+
-        '<div class="modal-dialog">'+
+        '<div class="modal-dialog modal-dialog-centered">'+
         '<div class="modal-content">'+
         '<div class="modal-header">'+
         '<h5 class="modal-title" id="modalH5_'+i+'"><i class="bi bi-pencil-square"></i> 時間割データ編集</h5>'+
@@ -199,7 +286,7 @@ function replaceItem(index){
 
 /* カレンダーの各科目のフォーマット */
 function subjectInCal (data, index) {
-    return '<div class="card border-0 mb-3"><div class="card-body p-0">'+
+    return '<div class="card border-0 m-0 mb-3"><div class="card-body p-1">'+
     '<h6 class="card-title">'+data.subject+'</h6>'+
     '<p class="card-text small">'+data.lecturers.join(', ')+'<br>'+
     data.room+' <i class="bi bi-pencil-square text-primary stretched-link" role="button" '+
@@ -212,12 +299,14 @@ function subjectInCal (data, index) {
 function handleRadioChange(event){
     switch(event.target.id) {
         case 'btnradio0':
-            showHTML('calendar', false);
-            showHTML('list', true);
+            hideHTML('calendar');
+            showHTML('list');
+            radio_state = 0;
             break;
         case 'btnradio1':
-            showHTML('list', false);
-            showHTML('calendar', true);
+            hideHTML('list');
+            showHTML('calendar');
+            radio_state = 1;
             break;
         default: console.log('undefined radio'); break;
     }
@@ -225,11 +314,9 @@ function handleRadioChange(event){
 }
 
 /* HTML の表示・非表示切替 */
-function showHTML(id, show) {
-    const classes = document.getElementById(id).classList;
-    if (!show) {
-        classes.add('d-none');
-    } else {
-        classes.remove('d-none');
-    }
+function showHTML(id) {
+    document.getElementById(id).classList.remove('d-none');
+}
+function hideHTML(id) {
+    document.getElementById(id).classList.add('d-none');
 }

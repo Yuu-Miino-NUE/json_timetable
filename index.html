@@ -13,6 +13,9 @@
             ::-webkit-scrollbar {
                 display: none;
             }
+            .card:hover {
+                background-color: lightgray !important;
+            }
         </style>
         <title>JSON 時間割</title>
     </head>
@@ -21,8 +24,11 @@
             <div class="" id="heading">
                 <h1 class="text-secondary mb-4">JSON 時間割</h1><hr>
             </div>
-            <div class="" id="control"></div>
-            <div class="" id="list"></div>
+            <div class="mb-4" id="fileUpload"></div>
+            <div class="mb-4 d-none" id="fileOperate"></div>
+            <div class="text-warning my-4 d-none" id="jsonWarn"></div>
+            <div class="d-none" id="radiosGroup"></div>
+            <div class="d-none" id="list"></div>
             <div class="d-none" id="calendar"></div>
             <div id="modals"></div>
         </body>
