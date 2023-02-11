@@ -1,0 +1,26 @@
+main {
+    font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
+}
+::-webkit-scrollbar {
+    display: none;
+}
+.card:hover {
+    background-color: lightgray !important;
+}
+@media print {
+    body * {
+        visibility: hidden;
+    }
+    .print, .print * {
+        visibility: visible;
+    }
+    .print-first {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .break-after {
+        page-break-after: always;
+        position: relative;
+    }
+}

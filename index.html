@@ -5,31 +5,22 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-        <style>
-            main {
-                font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
-            }
-            ::-webkit-scrollbar {
-                display: none;
-            }
-            .card:hover {
-                background-color: lightgray !important;
-            }
-        </style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+        <link rel="stylesheet" href="index.css">
         <title>JSON 時間割</title>
     </head>
     <main>
         <body class="py-4 mx-auto"  style="max-width: 800px">
             <div class="" id="heading">
-                <h1 class="text-secondary mb-4">JSON 時間割</h1><hr>
+                <h1 class="text-secondary mb-4">JSON 時間割</h1><hr class="my-4">
             </div>
             <div class="mb-4" id="fileUpload"></div>
             <div class="mb-4 d-none" id="fileOperate"></div>
+            <div class="mb-4 d-none" id="filter"></div>
             <div class="text-warning my-4 d-none" id="jsonWarn"></div>
             <div class="d-none" id="radiosGroup"></div>
             <div class="d-none" id="list"></div>
-            <div class="d-none" id="calendar"></div>
+            <div class="d-none print" id="calendar"></div>
             <div id="modals"></div>
         </body>
     </main>
