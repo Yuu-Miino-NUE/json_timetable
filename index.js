@@ -20,6 +20,7 @@ var lcState = 0;
 var andOrState = 'and';
 var capitalState = false;
 var filterList = [];
+var sortState = 0;
 
 /* ウィンドウ読み込み時の処理 */
 window.onload = function () {
@@ -30,7 +31,7 @@ window.onload = function () {
     writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
 }
 
-/***** Event handlers *****/
+/***** イベント関数 *****/
 /* 大文字小文字切り替えトグル */
 function handleToggleCapital (event) {
     capitalState = event.target.checked;
@@ -38,7 +39,7 @@ function handleToggleCapital (event) {
     writeAllDynamicHTML();
 }
 
-/* 文字列入力の処理 */
+/* フィルタ文字列入力 */
 function handleFilterKeyup (event) {
     const text = event.target.value.replace(/　/g," ");
     if (text.length == 0) {
@@ -46,6 +47,136 @@ function handleFilterKeyup (event) {
     }
     filterList = [...new Set(text.split(" "))];
     writeAllDynamicHTML();
+}
+
+/* ファイルアップロード */
+function handleUploadFile(event) {
+    if (event.target.files.length == 0) {
+        console.log('no file selected');
+        return;
+    }
+    for (var i = 0; i < event.target.files.length; i++) {
+        var reader = new FileReader();
+        reader.onload = (e)=>{
+            try {
+                json.push(...JSON.parse(e.target.result));
+                setUpJSON();
+                event.target.classList.remove('is-invalid');
+            } catch (err) {
+                console.log('invalid-json');
+                event.target.classList.add('is-invalid');
+                return;
+            }
+        };
+        reader.readAsText(event.target.files[i]);
+    }
+    event.target.value = null;
+}
+
+/* ファイルダウンロード */
+function handleDownloadJSON() {
+    var dataStr = "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(keyFilter.map(i=>json[i])));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", "timetable.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+/* JSON 削除， HTML 非表示化 */
+function handleResetJSON () {
+    json = [];
+    keyFilter = [];
+    filterList = [];
+    lcState = 0;
+    andOrState = 'and';
+    capitalState = false;
+    sortState = 0;
+
+    writeLCRadios('radiosGroup', handleRadioChange);
+    writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
+    writeAllDynamicHTML();
+    showHTML('fileUpload');
+    hideHTML('fileOperate');
+    hideHTML('radiosGroup');
+    hideHTML('filter');
+    hideHTML('list');
+    hideHTML('calendar');
+}
+
+/* ソート切替 */
+function handleToggleSort (event) {
+    switch (Number(event.target.value)) {
+        case 0: timeSort(); break;
+        case 1: subjectSort(); break;
+        default: console.log('undefined sort: '+event.target.value); break;
+    }
+    sortState = Number(event.target.value);
+    writeAllDynamicHTML();
+}
+
+/* json から 項目を削除 */
+function handleDeleteItem(index) {
+    json.splice(index, 1)
+    writeAllDynamicHTML();
+}
+
+/* json の項目を差替 */
+function handleReplaceItem(index){
+    const newVal = JSON.parse(document.getElementById('newJson'+index).value);
+    json[index] = newVal;
+    writeAllDynamicHTML();
+}
+
+/* リスト・カレンダー切替 */
+function handleRadioChange(event){
+    switch(Number(event.target.value)) {
+        case 0:
+            hideHTML('calendar');
+            showHTML('list');
+            break;
+        case 1:
+            hideHTML('list');
+            showHTML('calendar');
+            break;
+        default: console.log('undefined list/calendar radio: '+event.target.value); break;
+    }
+    lcState = Number(event.target.value);
+    event.target.blur()
+}
+
+/* AND/OR 切替 */
+function handleAndOrRadioChange (event) {
+    andOrState = event.target.value;
+    writeAllDynamicHTML();
+    event.target.blur()
+}
+
+/*** まとめ処理系 ***/
+/* HTML 描画まとめ */
+function writeAllDynamicHTML () {
+    refreshFilter();
+    writeList('list', json, keyFilter, sortState, handleToggleSort);
+    writeCalendar('calendar', json, keyFilter);
+    writeModals('modals', json, keyFilter, handleDeleteItem, handleReplaceItem);
+}
+
+/* 変数：json が更新されたときの処理まとめ */
+function setUpJSON(){
+    checkJSON('jsonWarn', json);
+    timeSort();
+    writeAllDynamicHTML();
+    hideHTML('fileUpload');
+    showHTML('fileOperate');
+    showHTML('radiosGroup');
+    showHTML('filter');
+    switch (lcState) {
+        case 0: showHTML('list'); break;
+        case 1: showHTML('calendar'); break;
+        default: break;
+    }
 }
 
 /* フィルタ更新 */
@@ -74,97 +205,8 @@ function refreshFilter() {
     });
 }
 
-/* ファイルアップロード時の処理 */
-function handleUploadFile(event) {
-    if (event.target.files.length == 0) {
-        console.log('no file selected');
-        return;
-    }
-    for (var i = 0; i < event.target.files.length; i++) {
-        var reader = new FileReader();
-        reader.onload = (e)=>{
-            try {
-                json.push(...JSON.parse(e.target.result));
-                setUpJSON();
-                event.target.classList.remove('is-invalid');
-            } catch (err) {
-                console.log('invalid-json');
-                event.target.classList.add('is-invalid');
-                return;
-            }
-        };
-        reader.readAsText(event.target.files[i]);
-    }
-    event.target.value = null;
-}
-
-/* ボタンクリックでファイルダウンロードのイベントをトリガ */
-function handleDownloadJSON() {
-    var dataStr = "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(keyFilter.map(i=>json[i])));
-    var downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", "timetable.json");
-    document.body.appendChild(downloadAnchorNode); // required for firefox
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
-}
-
-/* JSON を削除して HTML を非表示化 */
-function handleResetJSON () {
-    json = [];
-    keyFilter = [];
-    filterList = [];
-    lcState = 0;
-    andOrState = 'and';
-    capitalState = false;
-
-    writeLCRadios('radiosGroup', handleRadioChange);
-    writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
-    writeAllDynamicHTML();
-    showHTML('fileUpload');
-    hideHTML('fileOperate');
-    hideHTML('radiosGroup');
-    hideHTML('filter');
-    hideHTML('list');
-    hideHTML('calendar');
-}
-
-/* HTML 描画まとめ */
-function writeAllDynamicHTML () {
-    console.log('refresh filter...');
-    refreshFilter();
-    console.log('write list...');
-    writeList('list', json, keyFilter, handleTimeSort, handleSubjectSort);
-    console.log('refresh calendar...');
-    writeCalendar('calendar', json, keyFilter);
-    console.log('write modals...');
-    writeModals('modals', json, keyFilter, handleDeleteItem, handleReplaceItem);
-}
-
-/* 変数：json が更新されたときの処理まとめ */
-function setUpJSON(){
-    console.log('check json...');
-    checkJSON('jsonWarn', json);
-    console.log('write all dynamic HTML...');
-    writeAllDynamicHTML();
-    console.log('hide file upload...');
-    hideHTML('fileUpload');
-    console.log('show file operate...');
-    showHTML('fileOperate');
-    console.log('show radios group...');
-    showHTML('radiosGroup');
-    console.log('show filter...');
-    showHTML('filter');
-    switch (lcState) {
-        case 0: showHTML('list'); break;
-        case 1: showHTML('calendar'); break;
-        default: break;
-    }
-}
-
 /* 時系列ソート */
-function handleTimeSort() {
+function timeSort() {
     json.sort((a, b)=>{
         const amin = Math.min([...new Set(a.time.map(r=>r.day))].map(r=>days.indexOf(r)));
         const bmin = Math.min([...new Set(b.time.map(r=>r.day))].map(r=>days.indexOf(r)));
@@ -184,52 +226,13 @@ function handleTimeSort() {
         if (a.year == b.year) return 0;
         if (a.year < b.year) return -1;
     });
-    writeAllDynamicHTML();
 }
 
 /* 科目番号ソート */
-function handleSubjectSort() {
+function subjectSort() {
     json.sort((a, b)=>{
         if (a.subject > b.subject) return 1;
         if (a.subject == b.subject) return 0;
         if (a.subject < b.subject) return -1;
     })
-    writeAllDynamicHTML();
-}
-
-/* json から 項目を削除 */
-function handleDeleteItem(index) {
-    json.splice(index, 1)
-    writeAllDynamicHTML();
-}
-
-/* json の項目を差し替え */
-function handleReplaceItem(index){
-    const newVal = JSON.parse(document.getElementById('newJson'+index).value);
-    json[index] = newVal;
-    writeAllDynamicHTML();
-}
-
-/* リスト・カレンダー切替処理 */
-function handleRadioChange(event){
-    switch(event.target.value) {
-        case '0':
-            hideHTML('calendar');
-            showHTML('list');
-            break;
-        case '1':
-            hideHTML('list');
-            showHTML('calendar');
-            break;
-        default: console.log('undefined list/calendar radio: '+event.target.value); break;
-    }
-    lcState = event.target.value;
-    event.target.blur()
-}
-
-/* AND/OR 切替処理 */
-function handleAndOrRadioChange (event) {
-    andOrState = event.target.value;
-    writeAllDynamicHTML();
-    event.target.blur()
 }

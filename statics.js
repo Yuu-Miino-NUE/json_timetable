@@ -2,7 +2,7 @@ export const semesters = ['前', '後'];
 export const days = ['月', '火', '水', '木', '金'];
 const periods = [1, 2, 3, 4, 5];
 
-/* ファイルアップロード用 HTML を準備 */
+/* ファイルアップロードボタン HTML */
 export function writeFileInput (domID, onUpload) {
     const inputID = 'uploadFile';
     const btnID = 'btnUploadFile';
@@ -16,7 +16,7 @@ export function writeFileInput (domID, onUpload) {
     document.getElementById(inputID).addEventListener("change", onUpload);
 }
 
-/* ファイル操作用 HTML を準備 */
+/* ファイル操作パネル HTML */
 export function writeFileOperate (domID, onAdd, onDownload, onReset) {
     const inputAddID = 'addFile';
     const btnAddID = 'btnAddFile';
@@ -38,7 +38,7 @@ export function writeFileOperate (domID, onAdd, onDownload, onReset) {
     document.getElementById(btnResetID).addEventListener('click', onReset);
 }
 
-/* 文字列検索用 HTML を準備 */
+/* 検索文字列入力フィールド HTML */
 export function writeFilter (domID, capitalState, onAORadioChange, onKeyup, onCapital) {
     const radioName = 'andOrRadios';
     const filter = '<div class="input-group">'+
@@ -60,7 +60,7 @@ export function writeFilter (domID, capitalState, onAORadioChange, onKeyup, onCa
     document.getElementById("capital").addEventListener("change", onCapital);
 }
 
-/* ラジオボタン用 HTML を準備 */
+/* 表示切替ラジオボタン HTML  */
 export function writeLCRadios (domID, onChange) {
     const radioName = 'btnLCRadio';
     const radiosLabels = ['<i class="bi bi-list-ul me-1"></i>リスト表示', '<i class="bi bi-calendar3 me-1"></i>カレンダー表示'];
@@ -108,7 +108,7 @@ export function checkJSON(domID, json){
     }
 }
 
-/* JSON からカレンダーを表示 */
+/* カレンダー表示 HTML */
 export function writeCalendar(domID, json, keyFilter) {
     const years = [...new Set([...json.filter((_, i)=>keyFilter.includes(i))].sort((a, b)=>{
         if (a.year > b.year) return 1;
@@ -158,8 +158,8 @@ export function writeCalendar(domID, json, keyFilter) {
     document.getElementById(domID).innerHTML = calBody;
 }
 
-/* JSON からリストを準備 */
-export function writeList(domID, json, keyFilter, onTimeSort, onSubjectSort) {
+/* リスト表示 HTML */
+export function writeList(domID, json, keyFilter, sortState, onSort) {
     const listHeaderLabels = [
         {key: 'year',       label: '年度'},
         {key: 'time',       label: '学期・曜日・時限'},
@@ -188,14 +188,19 @@ export function writeList(domID, json, keyFilter, onTimeSort, onSubjectSort) {
         }).join('')+
         '</tr>'):''
     )).join('')+'</tbody>';
-    const sortBtns = [{id: 'timeSortBtn', label: '時系列順'}, {id: 'subjectSortBtn', label: '科目番号順'}].map(v=>(
-        '<button class="btn btn-outline-secondary" id="'+v.id+'">'+v.label+'</button>'
-    )).join(' ');
+
+    const radioName = 'sortRadio';
+    const sortBtns = '<div class="btn-group" role="group">'+
+    ['<i class="bi bi-clock me-1"></i>時系列順', '<i class="bi bi-123 me-1"></i>科目番号順'].map((v, i)=>(
+        '<input type="radio" class="btn-check" name="'+radioName+'" id="'+radioName+i+'" value="'+i+'" '+(i==sortState?'checked':'')+'>'+
+        '<label class="btn btn-outline-secondary" for="'+radioName+i+'" style="width: 120pt">'+v+'</label>'
+    )).join(' ')+'</div>';
 
     document.getElementById(domID).innerHTML = '<div class="mb-3">'+sortBtns+'</div>'+
     '<table class="table table-hover print">' + listHeader + listBody + '</table>';
-    document.getElementById('timeSortBtn').addEventListener('click', onTimeSort);
-    document.getElementById('subjectSortBtn').addEventListener('click', onSubjectSort);
+    document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
+        dom.addEventListener('change', onSort)
+    ));
 }
 
 /* JSON 編集画面の設置 */
