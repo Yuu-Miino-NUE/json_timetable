@@ -6,8 +6,9 @@ import {
     showHTML,
     hideHTML,
     semesters,
+    periods,
     days,
-    checkJSON,
+    writeWarning,
     writeCalendar,
     writeList,
     writeModals
@@ -25,7 +26,7 @@ var sortState = 0;
 /* ウィンドウ読み込み時の処理 */
 window.onload = function () {
     /* HTML を配置 */
-    writeFileInput('fileUpload', handleUploadFile);
+    writeFileInput('fileUpload', handleUploadFile, handleDownloadDummy);
     writeFileOperate('fileOperate', handleUploadFile, handleDownloadJSON, handleResetJSON);
     writeLCRadios('radiosGroup', handleRadioChange);
     writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
@@ -76,10 +77,22 @@ function handleUploadFile(event) {
 /* ファイルダウンロード */
 function handleDownloadJSON() {
     var dataStr = "data:text/json;charset=utf-8," +
-        encodeURIComponent(JSON.stringify(keyFilter.map(i=>json[i])));
+        encodeURIComponent(JSON.stringify(keyFilter.map(i=>json[i]), null, '\t'));
     var downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href",     dataStr);
     downloadAnchorNode.setAttribute("download", "timetable.json");
+    document.body.appendChild(downloadAnchorNode); // required for firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
+
+/* ダミーファイルダウンロード */
+function handleDownloadDummy() {
+    var dataStr = "data:text/json;charset=utf-8," +
+        encodeURIComponent(JSON.stringify(makeDummy(), null, '\t'));
+    var downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", "dummy.json");
     document.body.appendChild(downloadAnchorNode); // required for firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
@@ -165,7 +178,7 @@ function writeAllDynamicHTML () {
 
 /* 変数：json が更新されたときの処理まとめ */
 function setUpJSON(){
-    checkJSON('jsonWarn', json);
+    writeWarning('jsonWarning', json);
     timeSort();
     writeAllDynamicHTML();
     hideHTML('fileUpload');
@@ -208,16 +221,16 @@ function refreshFilter() {
 /* 時系列ソート */
 function timeSort() {
     json.sort((a, b)=>{
-        const amin = Math.min([...new Set(a.time.map(r=>r.day))].map(r=>days.indexOf(r)));
-        const bmin = Math.min([...new Set(b.time.map(r=>r.day))].map(r=>days.indexOf(r)));
+        const amin = Math.min([...new Set(a.times.map(r=>r.day))].map(r=>days.indexOf(r)));
+        const bmin = Math.min([...new Set(b.times.map(r=>r.day))].map(r=>days.indexOf(r)));
         if (amin > bmin) return 1;
         if (amin == bmin) return 0;
         if (amin < bmin) return -1;
     }).sort((a, b)=>{
-        if (a.time.some(r=>r.semester == semesters[0]) && !b.time.some(r=>r.semester == semesters[0])) {
+        if (a.times.some(r=>r.semester == semesters[0]) && !b.times.some(r=>r.semester == semesters[0])) {
             return -1;
         }
-        if (!a.time.some(r=>r.semester == semesters[0]) && b.time.some(r=>r.semester == semesters[0])) {
+        if (!a.times.some(r=>r.semester == semesters[0]) && b.times.some(r=>r.semester == semesters[0])) {
             return 1;
         }
         return 0;
@@ -235,4 +248,59 @@ function subjectSort() {
         if (a.subject == b.subject) return 0;
         if (a.subject < b.subject) return -1;
     })
+}
+
+/* ダミーデータ作成 */
+function makeDummy () {
+    const dummy = [];
+    const dummyYear = [2023, 2024];
+    const dummyRooms = ['B101', 'B102', 'B103', 'B104', 'C101', 'C102', 'C103', 'C104'];
+    const dummyLecturers = ['山田', '田中', '森', '近藤', '井上', '竹内', '木下', '本田'];
+
+    function randomInt (max, min=0) {
+        return min+Math.floor(Math.random() * (max-min))
+    }
+
+    for (var i=0; i < 56; i++) {
+        const dy = dummyYear[randomInt(dummyYear.length)];
+        const shuffled = dummyLecturers.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, randomInt(4, 1));
+        const pIndex = randomInt(periods.length);
+        dummy.push({
+            year: dy,
+            times: [{
+                semester: semesters[randomInt(2, 0)],
+                day:      days[randomInt(days.length)],
+                periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
+            }],
+            subject:  randomInt(dy * 10000 + 3000, dy * 10000),
+            room:     dummyRooms[randomInt(dummyRooms.length)],
+            lecturers: selected
+        });
+    }
+    for (var i=0; i < 8; i++) {
+        const dy = dummyYear[randomInt(dummyYear.length)];
+        const shuffled = dummyLecturers.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, randomInt(4, 1));
+        const pIndex = randomInt(periods.length);
+        dummy.push({
+            year: dy,
+            times: [
+                {
+                    semester: semesters[0],
+                    day:      days[randomInt(days.length)],
+                    periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
+                },
+                {
+                    semester: semesters[1],
+                    day:      days[randomInt(days.length)],
+                    periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
+                }
+            ],
+            subject:  randomInt(dy * 10000 + 3000, dy * 10000),
+            room:     dummyRooms[randomInt(dummyRooms.length)],
+            lecturers: selected
+        });
+    }
+    return dummy;
 }

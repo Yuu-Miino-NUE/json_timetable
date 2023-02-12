@@ -1,0 +1,1231 @@
+[
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20232262,
+		"room": "C103",
+		"lecturers": [
+			"近藤",
+			"井上"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "水",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20230854,
+		"room": "B103",
+		"lecturers": [
+			"木下",
+			"山田",
+			"近藤"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20230379,
+		"room": "B101",
+		"lecturers": [
+			"木下",
+			"井上",
+			"田中"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20231536,
+		"room": "C103",
+		"lecturers": [
+			"森",
+			"木下"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20231571,
+		"room": "C102",
+		"lecturers": [
+			"田中"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "金",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20232519,
+		"room": "C102",
+		"lecturers": [
+			"本田",
+			"木下"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20232690,
+		"room": "B104",
+		"lecturers": [
+			"森",
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					2,
+					3
+				]
+			}
+		],
+		"subject": 20241829,
+		"room": "C103",
+		"lecturers": [
+			"森",
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20240354,
+		"room": "C102",
+		"lecturers": [
+			"山田",
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20241482,
+		"room": "B103",
+		"lecturers": [
+			"木下"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20241885,
+		"room": "C104",
+		"lecturers": [
+			"竹内",
+			"田中",
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20242465,
+		"room": "B103",
+		"lecturers": [
+			"竹内",
+			"近藤"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20231575,
+		"room": "C103",
+		"lecturers": [
+			"森"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "水",
+				"periods": [
+					2
+				]
+			}
+		],
+		"subject": 20232001,
+		"room": "B101",
+		"lecturers": [
+			"森",
+			"山田",
+			"木下"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20232972,
+		"room": "C103",
+		"lecturers": [
+			"本田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20241001,
+		"room": "B101",
+		"lecturers": [
+			"木下"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20231825,
+		"room": "C104",
+		"lecturers": [
+			"竹内",
+			"井上"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "水",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20232896,
+		"room": "C104",
+		"lecturers": [
+			"森"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					1
+				]
+			}
+		],
+		"subject": 20231104,
+		"room": "B104",
+		"lecturers": [
+			"森",
+			"本田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20240325,
+		"room": "B102",
+		"lecturers": [
+			"森"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					2,
+					3
+				]
+			}
+		],
+		"subject": 20241285,
+		"room": "B101",
+		"lecturers": [
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20242998,
+		"room": "C101",
+		"lecturers": [
+			"近藤",
+			"竹内"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20240424,
+		"room": "B101",
+		"lecturers": [
+			"森"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20230255,
+		"room": "C103",
+		"lecturers": [
+			"井上",
+			"本田",
+			"山田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20242568,
+		"room": "C103",
+		"lecturers": [
+			"井上",
+			"本田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "金",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20242691,
+		"room": "C103",
+		"lecturers": [
+			"竹内",
+			"本田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20241518,
+		"room": "B101",
+		"lecturers": [
+			"山田",
+			"井上"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "水",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20231447,
+		"room": "C102",
+		"lecturers": [
+			"山田",
+			"竹内"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20241339,
+		"room": "B103",
+		"lecturers": [
+			"竹内",
+			"本田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20240038,
+		"room": "B103",
+		"lecturers": [
+			"田中"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20231586,
+		"room": "B104",
+		"lecturers": [
+			"森",
+			"井上",
+			"竹内"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					1
+				]
+			}
+		],
+		"subject": 20241392,
+		"room": "C102",
+		"lecturers": [
+			"木下",
+			"山田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20231583,
+		"room": "C102",
+		"lecturers": [
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20240107,
+		"room": "C102",
+		"lecturers": [
+			"井上",
+			"近藤"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20230072,
+		"room": "B102",
+		"lecturers": [
+			"山田",
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20242759,
+		"room": "B104",
+		"lecturers": [
+			"山田",
+			"森"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					2,
+					3
+				]
+			}
+		],
+		"subject": 20230761,
+		"room": "B101",
+		"lecturers": [
+			"森"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "金",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20240334,
+		"room": "B104",
+		"lecturers": [
+			"本田",
+			"田中",
+			"竹内"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "水",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20232251,
+		"room": "C102",
+		"lecturers": [
+			"本田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20230296,
+		"room": "C104",
+		"lecturers": [
+			"山田",
+			"田中",
+			"近藤"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					4,
+					5
+				]
+			}
+		],
+		"subject": 20231580,
+		"room": "B104",
+		"lecturers": [
+			"本田",
+			"井上",
+			"山田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "水",
+				"periods": [
+					2
+				]
+			}
+		],
+		"subject": 20231016,
+		"room": "C102",
+		"lecturers": [
+			"本田",
+			"森",
+			"山田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20231602,
+		"room": "C104",
+		"lecturers": [
+			"本田",
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20240246,
+		"room": "C102",
+		"lecturers": [
+			"田中"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20240700,
+		"room": "C101",
+		"lecturers": [
+			"近藤",
+			"井上"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20231196,
+		"room": "C101",
+		"lecturers": [
+			"山田",
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20242532,
+		"room": "B103",
+		"lecturers": [
+			"竹内"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					3,
+					4
+				]
+			}
+		],
+		"subject": 20241701,
+		"room": "C104",
+		"lecturers": [
+			"竹内"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "水",
+				"periods": [
+					2
+				]
+			}
+		],
+		"subject": 20232501,
+		"room": "C102",
+		"lecturers": [
+			"竹内",
+			"山田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					2
+				]
+			}
+		],
+		"subject": 20242596,
+		"room": "B102",
+		"lecturers": [
+			"田中",
+			"竹内"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20232733,
+		"room": "B103",
+		"lecturers": [
+			"本田",
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20241475,
+		"room": "B102",
+		"lecturers": [
+			"井上"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					1
+				]
+			}
+		],
+		"subject": 20232000,
+		"room": "C102",
+		"lecturers": [
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					4
+				]
+			}
+		],
+		"subject": 20241451,
+		"room": "B103",
+		"lecturers": [
+			"本田",
+			"森",
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "金",
+				"periods": [
+					1
+				]
+			}
+		],
+		"subject": 20241260,
+		"room": "B103",
+		"lecturers": [
+			"井上",
+			"森"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					2
+				]
+			}
+		],
+		"subject": 20230413,
+		"room": "C101",
+		"lecturers": [
+			"田中",
+			"木下",
+			"山田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "水",
+				"periods": [
+					5
+				]
+			},
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20230451,
+		"room": "C103",
+		"lecturers": [
+			"本田",
+			"田中"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "木",
+				"periods": [
+					1,
+					2
+				]
+			},
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					1
+				]
+			}
+		],
+		"subject": 20231863,
+		"room": "B104",
+		"lecturers": [
+			"森",
+			"山田",
+			"竹内"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					2
+				]
+			},
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					2,
+					3
+				]
+			}
+		],
+		"subject": 20242748,
+		"room": "B101",
+		"lecturers": [
+			"近藤",
+			"山田"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					1
+				]
+			},
+			{
+				"semester": "後",
+				"day": "水",
+				"periods": [
+					1,
+					2
+				]
+			}
+		],
+		"subject": 20241885,
+		"room": "C104",
+		"lecturers": [
+			"近藤"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					5
+				]
+			},
+			{
+				"semester": "後",
+				"day": "水",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20242779,
+		"room": "C101",
+		"lecturers": [
+			"山田"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					3,
+					4
+				]
+			},
+			{
+				"semester": "後",
+				"day": "月",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20232788,
+		"room": "B102",
+		"lecturers": [
+			"山田",
+			"木下",
+			"井上"
+		]
+	},
+	{
+		"year": 2024,
+		"times": [
+			{
+				"semester": "前",
+				"day": "月",
+				"periods": [
+					3
+				]
+			},
+			{
+				"semester": "後",
+				"day": "木",
+				"periods": [
+					3
+				]
+			}
+		],
+		"subject": 20240154,
+		"room": "B104",
+		"lecturers": [
+			"近藤",
+			"竹内"
+		]
+	},
+	{
+		"year": 2023,
+		"times": [
+			{
+				"semester": "前",
+				"day": "火",
+				"periods": [
+					5
+				]
+			},
+			{
+				"semester": "後",
+				"day": "火",
+				"periods": [
+					5
+				]
+			}
+		],
+		"subject": 20232265,
+		"room": "C103",
+		"lecturers": [
+			"本田",
+			"竹内"
+		]
+	}
+]

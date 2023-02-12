@@ -1,18 +1,22 @@
 export const semesters = ['前', '後'];
 export const days = ['月', '火', '水', '木', '金'];
-const periods = [1, 2, 3, 4, 5];
+export const periods = [1, 2, 3, 4, 5];
 
-/* ファイルアップロードボタン HTML */
-export function writeFileInput (domID, onUpload) {
+/* ファイルアップロード＋ダミーダウンロード HTML */
+export function writeFileInput (domID, onUpload, onDownload) {
     const inputID = 'uploadFile';
     const btnID = 'btnUploadFile';
+    const downBtnID = 'btnDownloadDummy';
     const fileInput =
         '<input class="form-control" type="file" id="'+inputID+'" accept=".json" hidden multiple>'+
-        '<button class="btn btn-primary" style="width: 120pt" id="'+btnID+'">'+
+        '<button class="btn btn-primary me-3" style="width: 120pt" id="'+btnID+'">'+
         '<i class="bi bi-file-earmark-arrow-up me-1"></i>アップロード</button>'+
+        '<button class="btn btn-outline-primary" style="width: 120pt" id="'+downBtnID+'">'+
+        '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>テンプレート</button>'+
         '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>';
     document.getElementById(domID).innerHTML = fileInput;
     document.getElementById(btnID).addEventListener('click', ()=>document.getElementById(inputID).click());
+    document.getElementById(downBtnID).addEventListener('click', onDownload);
     document.getElementById(inputID).addEventListener("change", onUpload);
 }
 
@@ -25,9 +29,9 @@ export function writeFileOperate (domID, onAdd, onDownload, onReset) {
     const fileOperate =
         '<input class="form-control" type="file" id="'+inputAddID+'" accept=".json" hidden multiple>'+
         '<button class="btn btn-outline-primary me-3" id="'+btnAddID+'">'+
-        '<i class="bi bi-file-earmark-plus-fill me-1"></i>JSON 追加</button>'+
+        '<i class="bi bi-file-earmark-plus-fill me-1"></i>ファイル追加</button>'+
         '<button class="btn btn-outline-secondary me-3" id="'+btnDownloadID+'">'+
-        '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>JSON 保存</button>'+
+        '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>ファイル保存</button>'+
         '<button class="btn btn-outline-danger" id="'+btnResetID+'">'+
         '<i class="bi bi-trash-fill me-1"></i>リセット</button>'+
         '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>';
@@ -76,43 +80,11 @@ export function writeLCRadios (domID, onChange) {
     ));
 }
 
-/* HTML の表示・非表示切替 */
-export function showHTML(id) {
-    document.getElementById(id).classList.remove('d-none');
-}
-export function hideHTML(id) {
-    document.getElementById(id).classList.add('d-none');
-}
-
-/* JSON が様式に合うかざっくりチェック */
-export function checkJSON(domID, json){
-    var warnMsg = '';
-    json.forEach(j=>{
-        j.time.forEach(jt=>{
-            if (!semesters.includes(jt.semester)) {
-                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.semester+' は学期の様式に合いません．<br>';
-            }
-            if ( jt.period.some(p=>!periods.includes(p)) ) {
-                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.period+' は時限の様式に合いません．<br>';
-            }
-            if (!days.includes(jt.day)) {
-                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.day+' は曜日の様式に合いません．<br>';
-            }
-        })
-    });
-    document.getElementById(domID).innerHTML = '<span class="text-warning">'+warnMsg+'</span>';
-    if (warnMsg.length > 0) {
-        showHTML(domID);
-    } else {
-        hideHTML(domID);
-    }
-}
-
 /* カレンダー表示 HTML */
 export function writeCalendar(domID, json, keyFilter) {
     var ysPair = [];
     keyFilter.forEach(k=>{
-        json[k].time.forEach(jt=>{
+        json[k].times.forEach(jt=>{
             if (!ysPair.some(ysp=>ysp.year == json[k].year && ysp.semester === jt.semester)) {
                 ysPair.push({year: json[k].year, semester: semesters.indexOf(jt.semester)});
             }
@@ -130,7 +102,7 @@ export function writeCalendar(domID, json, keyFilter) {
 
     /* カレンダーの各科目のフォーマット */
     function subjectInCal (data, index) {
-        return '<div class="card border-0 m-0 mb-3"><div class="card-body p-1">'+
+        return '<div class="card border-0 m-0 mb-0"><div class="card-body p-1">'+
         '<h6 class="card-title mb-0">'+data.subject+'</h6>'+
         '<p class="card-text small">'+data.lecturers.join(', ')+'<br>'+
         data.room+' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
@@ -153,7 +125,7 @@ export function writeCalendar(domID, json, keyFilter) {
             days.map(d=>(
                 '<div class="col border p-0">'+
                 [...json.keys()].filter(k=>
-                    (keyFilter.includes(k) && json[k].year==ys.year && json[k].time.some(jt=>jt.semester==semesters[ys.semester] && jt.day==d && jt.period.includes(p)))
+                    (keyFilter.includes(k) && json[k].year==ys.year && json[k].times.some(jt=>jt.semester==semesters[ys.semester] && jt.day==d && jt.periods.includes(p)))
                 ).map(k=>subjectInCal(json[k], k)).join('')+'</div>'
             )).join('')+
             '</div>'+ // A
@@ -170,7 +142,7 @@ export function writeCalendar(domID, json, keyFilter) {
 export function writeList(domID, json, keyFilter, sortState, onSort) {
     const listHeaderLabels = [
         {key: 'year',       label: '年度'},
-        {key: 'time',       label: '学期・曜日・時限'},
+        {key: 'times',       label: '学期・曜日・時限'},
         {key: 'subject',    label: '科目番号'},
         {key: 'lecturers',  label: '担当教員'},
         {key: 'room',       label: '教室'}
@@ -185,8 +157,8 @@ export function writeList(domID, json, keyFilter, sortState, onSort) {
         keyFilter.includes(i) ? ('<tr role="button" data-bs-toggle="modal" data-bs-target="#modal'+i+'">'+
         listHeaderLabels.map((value)=>{
             var ret = '';
-            if (value.key == 'time') {
-                ret = "（"+js.time.map(t=>Object.values(t).join('・')).join('，')+"）";
+            if (value.key == 'times') {
+                ret = "（"+js.times.map(t=>Object.values(t).join('・')).join('，')+"）";
             } else if (Array.isArray(js[value.key])) {
                 ret = js[value.key].join(', ');
             } else {
@@ -239,4 +211,36 @@ export function writeModals(domID, json, keyFilter, onDelete, onReplace){
         document.getElementById('deleteItemBtn'+i).addEventListener('click', ()=>onDelete(i));
         document.getElementById('replaceItemBtn'+i).addEventListener('click', ()=>onReplace(i));
     });
+}
+
+/* JSON が様式に合うかざっくりチェック */
+export function writeWarning(domID, json){
+    var warnMsg = '';
+    json.forEach(j=>{
+        j.times.forEach(jt=>{
+            if (!semesters.includes(jt.semester)) {
+                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.semester+' は学期の様式に合いません．<br>';
+            }
+            if ( jt.periods.some(p=>!periods.includes(p)) ) {
+                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.periods+' は時限の様式に合いません．<br>';
+            }
+            if (!days.includes(jt.day)) {
+                warnMsg += '<i class="bi bi-exclamation-triangle"></i> '+j.subject+': '+jt.day+' は曜日の様式に合いません．<br>';
+            }
+        })
+    });
+    document.getElementById(domID).innerHTML = '<span class="text-warning">'+warnMsg+'</span>';
+    if (warnMsg.length > 0) {
+        showHTML(domID);
+    } else {
+        hideHTML(domID);
+    }
+}
+
+/* HTML の表示・非表示切替 */
+export function showHTML(id) {
+    document.getElementById(id).classList.remove('d-none');
+}
+export function hideHTML(id) {
+    document.getElementById(id).classList.add('d-none');
 }
