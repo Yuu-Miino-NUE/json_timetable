@@ -133,7 +133,7 @@ export function writeCalendar(domID, json, keyFilter) {
         return '<div class="card border-0 m-0 mb-3"><div class="card-body p-1">'+
         '<h6 class="card-title mb-0">'+data.subject+'</h6>'+
         '<p class="card-text small">'+data.lecturers.join(', ')+'<br>'+
-        data.room+' <i class="bi bi-pencil-square text-primary stretched-link non-print" role="button" '+
+        data.room+' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
         'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
         '</p>'+
         '</div></div>';
@@ -204,7 +204,7 @@ export function writeList(domID, json, keyFilter, sortState, onSort) {
         '<label class="btn btn-outline-secondary" for="'+radioName+i+'" style="width: 120pt">'+v+'</label>'
     )).join(' ')+'</div>';
 
-    document.getElementById(domID).innerHTML = '<div class="mb-3 non-print">'+sortBtns+'</div>'+
+    document.getElementById(domID).innerHTML = '<div class="mb-3 no-print">'+sortBtns+'</div>'+
     '<table class="table table-hover print">' + listHeader + listBody + '</table>';
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
         dom.addEventListener('change', onSort)
