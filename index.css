@@ -1,6 +1,9 @@
 main {
     font-family: "Helvetica Neue", "Helvetica", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Arial", "Yu Gothic", "Meiryo", sans-serif;
 }
+body {
+    max-width: 800px;
+}
 ::-webkit-scrollbar {
     display: none;
 }
@@ -8,19 +11,24 @@ main {
     background-color: lightgray !important;
 }
 @media print {
+    body {
+        max-width: none;
+    }
     body * {
         visibility: hidden;
     }
+    .non-print {
+        display: none;
+    }
     .print, .print * {
         visibility: visible;
-    }
-    .print-first {
-        position: absolute;
-        left: 0;
-        top: 0;
+        font-size: x-small;
     }
     .break-after {
         page-break-after: always;
         position: relative;
+    }
+    .col-1half {
+        width: 25px;
     }
 }

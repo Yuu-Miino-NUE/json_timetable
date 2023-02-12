@@ -68,7 +68,7 @@ export function writeLCRadios (domID, onChange) {
         '<input type="radio" class="btn-check" name="'+radioName+'" id="'+radioName+index+'" value="'+index+'" autocomplete="off"'+(index==0?' checked':'')+'>'+
         '<label class="btn btn-outline-secondary" for="'+radioName+index+'" style="width: 120pt">'+value+'</label>'
     )).join('');
-    const radiosGroup = '<div class="btn-group" role="group">'+radios+'</div><hr class="my-4">';
+    const radiosGroup = '<div class="btn-group" role="group">'+radios+'</div><hr class="mt-4">';
     document.getElementById(domID).innerHTML = radiosGroup;
 
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
@@ -100,7 +100,7 @@ export function checkJSON(domID, json){
             }
         })
     });
-    document.getElementById(domID).innerHTML = warnMsg;
+    document.getElementById(domID).innerHTML = '<span class="text-warning">'+warnMsg+'</span>';
     if (warnMsg.length > 0) {
         showHTML(domID);
     } else {
@@ -110,50 +110,58 @@ export function checkJSON(domID, json){
 
 /* カレンダー表示 HTML */
 export function writeCalendar(domID, json, keyFilter) {
-    const years = [...new Set([...json.filter((_, i)=>keyFilter.includes(i))].sort((a, b)=>{
+    var ysPair = [];
+    keyFilter.forEach(k=>{
+        json[k].time.forEach(jt=>{
+            if (!ysPair.some(ysp=>ysp.year == json[k].year && ysp.semester === jt.semester)) {
+                ysPair.push({year: json[k].year, semester: semesters.indexOf(jt.semester)});
+            }
+        });
+    });
+    ysPair = ysPair.sort((a, b)=>{
         if (a.year > b.year) return 1;
-        if (a. year == b.year) return 0;
+        if (a.year == b.year) return a.semester-b.semester;
         if (a.year < b.year) return -1;
-    }).map(r=>r.year))];
+    }).filter((value, index, self)=>(
+        index === self.findIndex((t) => (
+            t.year == value.year && t.semester == value.semester
+        ))
+    ));
 
     /* カレンダーの各科目のフォーマット */
     function subjectInCal (data, index) {
         return '<div class="card border-0 m-0 mb-3"><div class="card-body p-1">'+
-        '<h6 class="card-title">'+data.subject+'</h6>'+
+        '<h6 class="card-title mb-0">'+data.subject+'</h6>'+
         '<p class="card-text small">'+data.lecturers.join(', ')+'<br>'+
-        data.room+' <i class="bi bi-pencil-square text-primary stretched-link" role="button" '+
+        data.room+' <i class="bi bi-pencil-square text-primary stretched-link non-print" role="button" '+
         'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
         '</p>'+
         '</div></div>';
     }
 
-    const calBody = years.map(y=>(
-        '<div class="mb-5 d-block">'+ // F
-        semesters.map((s, i)=>(
-            '<div class="break-after">'+ // E
-            (i==0?'<div class="print-first">':'')+ // D
-            '<h4 class="mb-3">'+y+' 年度'+s+'期</h4>'+
-            '<div class="px-0">'+ // C
-            '<div class="mb-3 row d-flex justify-content-center">'+ // B
-            '<div class="col-1 text-center text-light bg-dark">時限</div>'+
-            '<div class="col-11 row">'+days.map(d=>('<div class="col text-center text-light bg-dark">'+d+'</div>')).join('')+'</div>'+
-            periods.map(p=>(
-                '<div class="col-1 border d-flex align-items-center justify-content-center text-light bg-secondary">'+p+'</div>'+
-                '<div class="col-11 row">'+ // A
-                days.map(d=>(
-                    '<div class="col border p-0">'+
-                    [...json.keys()].filter(k=>
-                        (keyFilter.includes(k) && json[k].year==y && json[k].time.some(jt=>jt.semester==s && jt.day==d && jt.period.includes(p)))
-                    ).map(k=>subjectInCal(json[k], k)).join('')+'</div>'
-                )).join('')+
-                '</div>' // A
+    const calBody = ysPair.map((ys, ysi)=>(
+        '<div class="mb-5 d-block">'+ // E
+        '<div '+(ysi==ysPair.length-1 ? '':'class="break-after"')+'>'+ // D
+        '<h4 class="mb-3">'+ys.year+' 年度 '+semesters[ys.semester]+'期</h4>'+
+        '<div class="mb-3 row d-flex justify-content-center px-0">'+ // C
+        '<div class="row"><div class="col-1 col-1half border d-flex align-items-center justify-content-center text-light bg-dark">時限</div>'+
+        '<div class="col row">'+days.map(d=>('<div class="col border d-flex align-items-center justify-content-center text-light bg-dark">'+d+'</div>')).join('')+'</div></div>'+
+        periods.map(p=>(
+            '<div class="row">'+ // B
+            '<div class="col-1 col-1half border d-flex align-items-center justify-content-center text-light bg-secondary">'+p+'</div>'+
+            '<div class="col row">'+ // A
+            days.map(d=>(
+                '<div class="col border p-0">'+
+                [...json.keys()].filter(k=>
+                    (keyFilter.includes(k) && json[k].year==ys.year && json[k].time.some(jt=>jt.semester==semesters[ys.semester] && jt.day==d && jt.period.includes(p)))
+                ).map(k=>subjectInCal(json[k], k)).join('')+'</div>'
             )).join('')+
-            '</div>'+ // B
-            '</div>'+ // C
-            (i==0?'</div>':'')+ // D
-            '</div>' // E
-        )).join('') +
-        '</div>' // F
+            '</div>'+ // A
+            '</div>' // B
+        )).join('')+
+        '</div>'+ // C
+        '</div>'+ // D
+        '</div>' // E
     )).join('');
     document.getElementById(domID).innerHTML = calBody;
 }
@@ -196,7 +204,7 @@ export function writeList(domID, json, keyFilter, sortState, onSort) {
         '<label class="btn btn-outline-secondary" for="'+radioName+i+'" style="width: 120pt">'+v+'</label>'
     )).join(' ')+'</div>';
 
-    document.getElementById(domID).innerHTML = '<div class="mb-3">'+sortBtns+'</div>'+
+    document.getElementById(domID).innerHTML = '<div class="mb-3 non-print">'+sortBtns+'</div>'+
     '<table class="table table-hover print">' + listHeader + listBody + '</table>';
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
         dom.addEventListener('change', onSort)
