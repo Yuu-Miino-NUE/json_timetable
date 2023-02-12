@@ -221,33 +221,27 @@ function refreshFilter() {
 /* 時系列ソート */
 function timeSort() {
     json.sort((a, b)=>{
-        const amin = Math.min([...new Set(a.times.map(r=>r.day))].map(r=>days.indexOf(r)));
-        const bmin = Math.min([...new Set(b.times.map(r=>r.day))].map(r=>days.indexOf(r)));
+        const amin = Math.min(...[...new Set(a.times.map(r=>r.day))].map(r=>days.indexOf(r)));
+        const bmin = Math.min(...[...new Set(b.times.map(r=>r.day))].map(r=>days.indexOf(r)));
         if (amin > bmin) return 1;
-        if (amin == bmin) return 0;
+        if (amin == bmin){
+            const aminp = Math.min(...a.times.filter(r=>days.indexOf(r.day)==amin).map(r=>Math.min(...r.periods)));
+            const bminp = Math.min(...b.times.filter(r=>days.indexOf(r.day)==bmin).map(r=>Math.min(...r.periods)));
+            return aminp - bminp;
+        }
         if (amin < bmin) return -1;
     }).sort((a, b)=>{
-        if (a.times.some(r=>r.semester == semesters[0]) && !b.times.some(r=>r.semester == semesters[0])) {
-            return -1;
-        }
-        if (!a.times.some(r=>r.semester == semesters[0]) && b.times.some(r=>r.semester == semesters[0])) {
-            return 1;
-        }
-        return 0;
-    }).sort((a, b)=>{
+        const amin = Math.min(...a.times.map(r=>semesters.indexOf(r.semester)));
+        const bmin = Math.min(...b.times.map(r=>semesters.indexOf(r.semester)));
         if (a.year > b.year) return 1;
-        if (a.year == b.year) return 0;
+        if (a.year == b.year) return amin - bmin;
         if (a.year < b.year) return -1;
     });
 }
 
 /* 科目番号ソート */
 function subjectSort() {
-    json.sort((a, b)=>{
-        if (a.subject > b.subject) return 1;
-        if (a.subject == b.subject) return 0;
-        if (a.subject < b.subject) return -1;
-    })
+    json.sort((a, b)=>(a.subject - b.subject))
 }
 
 /* ダミーデータ作成 */
