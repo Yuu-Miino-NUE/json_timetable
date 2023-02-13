@@ -32,9 +32,28 @@ export function writeFileOperate (domID, onAdd, onDownload, onReset) {
         '<i class="bi bi-file-earmark-plus-fill me-1"></i>ファイル追加</button>'+
         '<button class="btn btn-outline-secondary me-3" id="'+btnDownloadID+'">'+
         '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>ファイル保存</button>'+
-        '<button class="btn btn-outline-danger" id="'+btnResetID+'">'+
+        '<button class="btn btn-outline-danger me-3" id="'+btnResetID+'">'+
         '<i class="bi bi-trash-fill me-1"></i>リセット</button>'+
-        '<div class="invalid-feedback pt-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>';
+        '<span class="small text-muted" role="button" data-bs-toggle="modal" data-bs-target="#fileOpModal">'+
+        '<i class="bi bi-exclamation-circle me-1"></i>ファイル操作の注意点</span>'+
+        '<div class="invalid-feedback my-2">ファイル読み込みに失敗しました．フォーマットを確認してください．</div>'+
+        '<div class="modal fade" id="fileOpModal" tabindex="-1" aria-hidden="true">'+
+        '<div class="modal-dialog modal-dialog-centered">'+
+        '<div class="modal-content">'+
+        '<div class="modal-header"><h5 class="modal-title">'+
+        '<i class="bi bi-exclamation-circle me-1"></i>ファイル操作の注意点</h5></div>'+
+        '<div class="modal-body small">'+
+        '閲覧・編集中のデータはブラウザに保存されています．<br>'+
+        'キャッシュを削除するなどすると，ブラウザのデータは失われます．<br>'+
+        'ブラウザのデータを編集しても PC 上のファイルは編集されません．<br>'+
+        '必要に応じて「ファイル保存」してください．'+
+        '</div>'+
+        '<div class="modal-footer">'+
+        '<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>'+
+        '</div>'+
+        '</div>'+
+        '</div>'+
+        '</div>';
     document.getElementById(domID).innerHTML = fileOperate;
     document.getElementById(btnAddID).addEventListener('click', ()=>document.getElementById(inputAddID).click());
     document.getElementById(inputAddID).addEventListener("change", onAdd);

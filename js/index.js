@@ -30,6 +30,11 @@ window.onload = function () {
     writeFileOperate('fileOperate', handleUploadFile, handleDownloadJSON, handleResetJSON);
     writeLCRadios('radiosGroup', handleRadioChange);
     writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
+
+    if (localStorage.getItem('json') != null) {
+        json = JSON.parse(localStorage.getItem('json'));
+        setUpJSON();
+    }
 }
 
 /***** イベント関数 *****/
@@ -117,6 +122,8 @@ function handleResetJSON () {
     hideHTML('filter');
     hideHTML('list');
     hideHTML('calendar');
+
+    localStorage.removeItem('json');
 }
 
 /* ソート切替 */
@@ -174,6 +181,7 @@ function writeAllDynamicHTML () {
     writeList('list', json, keyFilter, sortState, handleToggleSort);
     writeCalendar('calendar', json, keyFilter);
     writeModals('modals', json, keyFilter, handleDeleteItem, handleReplaceItem);
+    localStorage.setItem('json', JSON.stringify(json));
 }
 
 /* 変数：json が更新されたときの処理まとめ */
