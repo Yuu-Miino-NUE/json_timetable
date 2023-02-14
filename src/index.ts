@@ -281,8 +281,8 @@ function subjectSort() {
 }
 
 /* ダミーデータ作成 */
-function makeDummy () {
-    const dummy = [];
+function makeDummy (): TTEntry[] {
+    const dummy: TTEntry[] = [];
     const dummyYear = [2023, 2024];
     const dummyRooms = ['B101', 'B102', 'B103', 'B104', 'C101', 'C102', 'C103', 'C104'];
     const dummyLecturers = ['山田', '田中', '森', '近藤', '井上', '竹内', '木下', '本田'];
