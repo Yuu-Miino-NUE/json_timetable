@@ -1,0 +1,23 @@
+{
+  "name": "json_timetable",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "build": "./node_modules/typescript/bin/tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yuu-Miino-NUE/json_timetable.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yuu-Miino-NUE/json_timetable/issues"
+  },
+  "homepage": "https://github.com/Yuu-Miino-NUE/json_timetable#readme",
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}
