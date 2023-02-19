@@ -298,10 +298,8 @@ export function writeList(
     )).join(' ')+'</div>';
 
     const divDom = document.getElementById(divID);
-    if (divDom) divDom.innerHTML = (keyFilter.length == 0 ? '<div class="text-muted text-center">該当データはありません．</div>' :
-        '<div class="mb-3 no-print">'+sortBtns+'</div>'+
-        '<table class="table table-hover print">' + listHeader + listBody + '</table>'
-    );
+    if (divDom) divDom.innerHTML = '<div class="mb-3 no-print">'+sortBtns+'</div>'+
+    '<table class="table table-hover print">' + listHeader + listBody + '</table>';
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
         dom.addEventListener('change', onSort)
     ));
