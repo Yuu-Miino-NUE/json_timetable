@@ -184,7 +184,7 @@ function handleDeleteItem(index: number) {
 /* json の項目を差替 */
 function handleReplaceItem(index: number, domID: string){
     const dom = document.getElementById(domID);
-    if (!(dom instanceof HTMLInputElement)) return;
+    if (!(dom instanceof HTMLTextAreaElement)) return;
     const newVal = JSON.parse(dom.value);
     json[index] = newVal;
     writeAllDynamicHTML();

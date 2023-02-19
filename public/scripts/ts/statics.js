@@ -34,11 +34,11 @@ export function writeFileOperate(divID, onAdd, onDownload, onReset) {
     const btnDownloadID = 'btnDownloadFile';
     const btnResetID = 'btnResetJSON';
     const fileOperate = '<input class="form-control" type="file" id="' + inputAddID + '" accept=".json" hidden multiple>' +
-        '<button class="btn btn-outline-primary me-3" id="' + btnAddID + '">' +
+        '<button class="btn btn-outline-primary me-3" id="' + btnAddID + '" style="width: 110pt">' +
         '<i class="bi bi-file-earmark-plus-fill me-1"></i>ファイル追加</button>' +
-        '<button class="btn btn-outline-secondary me-3" id="' + btnDownloadID + '">' +
+        '<button class="btn btn-outline-secondary me-3" id="' + btnDownloadID + '" style="width: 110pt">' +
         '<i class="bi bi-file-earmark-arrow-down-fill me-1"></i>ファイル保存</button>' +
-        '<button class="btn btn-outline-danger me-3" id="' + btnResetID + '">' +
+        '<button class="btn btn-outline-danger me-3" id="' + btnResetID + '" style="width: 110pt">' +
         '<i class="bi bi-trash-fill me-1"></i>リセット</button>' +
         '<span class="small text-muted" role="button" data-bs-toggle="modal" data-bs-target="#fileOpModal">' +
         '<i class="bi bi-exclamation-circle me-1"></i>ファイル操作の注意点</span>' +
@@ -143,10 +143,12 @@ export function writeCalendar(divID, json, keyFilter) {
         }
     }).filter((value, index, self) => (index === self.findIndex((t) => (t.year == value.year && t.semesIdx == value.semesIdx))));
     /* カレンダーの各科目のフォーマット */
-    const subjectInCal = (data, index) => ('<div class="card ' + (data.grade == '学部' ? 'text-white bg-success' : 'text-white bg-primary') + ' border-1 m-0 mb-0" role="button" ' +
+    const subjectInCal = (data, index, dupLecs) => ('<div class="card ' + (dupLecs.size != 0 ? '' : (data.grade == '学部' ? 'text-white bg-success' : 'text-white bg-primary')) + ' border-1 m-0 mb-0" role="button" ' +
         'data-bs-toggle="modal" data-bs-target="#modal' + index + '"><div class="card-body p-1">' +
-        '<h6 class="card-title mb-0">' + data.subject + '</h6>' +
-        '<p class="card-text small">' + data.lecturers.join(', ') + '<br>@' +
+        '<h6 class="card-title mb-0">' +
+        (dupLecs.size != 0 ? '<span class="spinner-grow spinner-grow-sm text-danger me-1" role="status"></span>' : '') +
+        data.subject + '</h6>' +
+        '<p class="card-text small">' + data.lecturers.map(l => ('<span class="' + (dupLecs.has(l) ? 'text-danger fw-bold' : '') + '">' + l + '</span>')).join(', ') + '<br>@' +
         data.room +
         // ' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
         // 'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
@@ -161,8 +163,22 @@ export function writeCalendar(divID, json, keyFilter) {
         periods.map(p => ('<div class="row">' + // B
             '<div class="col-1 col-1half border d-flex align-items-center justify-content-center text-light bg-secondary">' + p + '</div>' +
             '<div class="col row">' + // A
-            days.map(d => ('<div class="col border p-0">' +
-                [...json.keys()].filter(k => (keyFilter.includes(k) && json[k].year == ys.year && json[k].times.some(jt => jt.semester == semesters[ys.semesIdx] && jt.day == d && jt.periods.includes(p)))).map(k => subjectInCal(json[k], k)).join('') + '</div>')).join('') +
+            days.map(d => {
+                const lecs = new Set();
+                return '<div class="col border p-0">' +
+                    [...json.keys()].filter(k => (keyFilter.includes(k) && json[k].year == ys.year && json[k].times.some(jt => jt.semester == semesters[ys.semesIdx] && jt.day == d && jt.periods.includes(p)))).map(k => {
+                        const dups = new Set();
+                        json[k].lecturers.forEach(l => {
+                            if (!lecs.has(l)) {
+                                lecs.add(l);
+                            }
+                            else {
+                                dups.add(l);
+                            }
+                        });
+                        return subjectInCal(json[k], k, dups);
+                    }).join('') + '</div>';
+            }).join('') +
             '</div>' + // A
             '</div>' // B
         )).join('') +
@@ -243,10 +259,25 @@ export function writeModals(divID, json, keyFilter, onDelete, onReplace) {
     keyFilter.forEach(i => {
         const delDom = document.getElementById('deleteItemBtn' + i);
         const repDom = document.getElementById('replaceItemBtn' + i);
+        const txtDom = document.getElementById('newJson' + i);
         if (delDom)
             delDom.addEventListener('click', () => onDelete(i));
         if (repDom)
             repDom.addEventListener('click', () => onReplace(i, 'newJson' + i));
+        if ((txtDom instanceof HTMLTextAreaElement))
+            txtDom.addEventListener('keydown', function (e) {
+                if (e.key == 'Tab') {
+                    e.preventDefault();
+                    var start = this.selectionStart;
+                    var end = this.selectionEnd;
+                    // set textarea value to: text before caret + tab + text after caret
+                    this.value = this.value.substring(0, start) +
+                        "\t" + this.value.substring(end);
+                    // put caret at right position again
+                    this.selectionStart =
+                        this.selectionEnd = start + 1;
+                }
+            });
     });
 }
 /* JSON が様式に合うかざっくりチェック */

@@ -155,7 +155,7 @@ function handleDeleteItem(index) {
 /* json の項目を差替 */
 function handleReplaceItem(index, domID) {
     const dom = document.getElementById(domID);
-    if (!(dom instanceof HTMLInputElement))
+    if (!(dom instanceof HTMLTextAreaElement))
         return;
     const newVal = JSON.parse(dom.value);
     json[index] = newVal;
