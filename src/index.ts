@@ -14,7 +14,9 @@ import {
     writeModals,
     AndOr,
     Sort,
-    TTEntry
+    TTEntry,
+    grades,
+    quarters
 } from './statics.js';
 
 /* グローバル変数 */
@@ -23,6 +25,8 @@ var keyFilter: number[] = []; // Key のみ保存
 var lcState: number = 0;
 var andOrState: AndOr = 'and';
 var capitalState: boolean = false;
+var bachelorState: boolean = true;
+var masterState: boolean = true;
 var filterList: string[] = [];
 var sortState: Sort = 'time';
 
@@ -32,7 +36,9 @@ window.onload = function () {
     writeFileInput('fileUpload', handleUploadFile, handleDownloadDummy);
     writeFileOperate('fileOperate', handleUploadFile, handleDownloadJSON, handleResetJSON);
     writeLCRadios('radiosGroup', handleRadioChange);
-    writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
+    writeFilter('filter',
+        capitalState, bachelorState, masterState, handleAndOrRadioChange,  handleFilterKeyup,
+        handleToggleCapital, handleToggleBachelor, handleToggleMaster);
 
     const storedJson = localStorage.getItem('json');
     if (storedJson) {
@@ -46,6 +52,22 @@ window.onload = function () {
 function handleToggleCapital (event: Event) {
     if (! (event.target instanceof HTMLInputElement)) return;
     capitalState = event.target.checked;
+    event.target.blur();
+    writeAllDynamicHTML();
+}
+
+/* 学部授業の表示・非表示トグル */
+function handleToggleBachelor (event: Event) {
+    if (! (event.target instanceof HTMLInputElement)) return;
+    bachelorState = event.target.checked;
+    event.target.blur();
+    writeAllDynamicHTML();
+}
+
+/* 大学院授業の表示・非表示トグル */
+function handleToggleMaster (event: Event) {
+    if (! (event.target instanceof HTMLInputElement)) return;
+    masterState = event.target.checked;
     event.target.blur();
     writeAllDynamicHTML();
 }
@@ -122,7 +144,9 @@ function handleResetJSON () {
     sortState = 'time';
 
     writeLCRadios('radiosGroup', handleRadioChange);
-    writeFilter('filter', capitalState, handleAndOrRadioChange,  handleFilterKeyup, handleToggleCapital);
+    writeFilter('filter',
+        capitalState, bachelorState, masterState, handleAndOrRadioChange,  handleFilterKeyup,
+        handleToggleCapital, handleToggleBachelor, handleToggleMaster);
     writeAllDynamicHTML();
     showHTML('fileUpload');
     hideHTML('fileOperate');
@@ -226,9 +250,13 @@ function setUpJSON(){
 function refreshFilter() {
     if (json.length == 0 || filterList.length == 0) {
         keyFilter = json.length == 0 ? [] : [...json.keys()];
+        keyFilter = keyFilter.filter(i=>(bachelorState && json[i].grade == '学部') || (masterState && json[i].grade == '大学院'));
         return;
     }
-    keyFilter = json.map((_, i)=>i).filter(i=>{
+    keyFilter = json.map((_, i)=>i)
+    .filter(i=>(
+        (bachelorState && json[i].grade == '学部') || (masterState && json[i].grade == '大学院')
+    )).filter(i=>{
         var data = JSON.stringify(json[i]);
         if (!capitalState) {
             switch (andOrState) {
@@ -287,25 +315,29 @@ function makeDummy (): TTEntry[] {
     const dummyRooms = ['B101', 'B102', 'B103', 'B104', 'C101', 'C102', 'C103', 'C104'];
     const dummyLecturers = ['山田', '田中', '森', '近藤', '井上', '竹内', '木下', '本田'];
 
-    function randomInt (max: number, min:number = 0) {
-        return min+Math.floor(Math.random() * (max-min))
-    }
+    // min <= return < max
+    const randomInt = (max: number, min:number = 0) => (min+Math.floor(Math.random() * (max-min)));
 
     for (var i=0; i < 56; i++) {
         const dy = dummyYear[randomInt(dummyYear.length)];
         const shuffled = dummyLecturers.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, randomInt(4, 1));
         const pIndex = randomInt(periods.length);
+        const gr = grades[randomInt(2)];
+        const semsIdx = randomInt(2);
         dummy.push({
+            grade: gr,
             year: dy,
             times: [{
-                semester: semesters[randomInt(2, 0)],
+                semester: semesters[semsIdx],
+                quarter: (gr=='大学院'?(randomInt(3)==2? quarters[2*semsIdx+randomInt(2)] : undefined) : undefined),
                 day:      days[randomInt(days.length)],
                 periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
             }],
             subject:  randomInt(dy * 10000 + 3000, dy * 10000),
             room:     dummyRooms[randomInt(dummyRooms.length)],
-            lecturers: selected
+            lecturers: selected,
+            credits: 2
         });
     }
     for (var i=0; i < 8; i++) {
@@ -313,23 +345,28 @@ function makeDummy (): TTEntry[] {
         const shuffled = dummyLecturers.sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, randomInt(4, 1));
         const pIndex = randomInt(periods.length);
+        const gr = grades[randomInt(2)];
         dummy.push({
+            grade: grades[randomInt(2)],
             year: dy,
             times: [
                 {
                     semester: semesters[0],
+                    quarter: (gr=='大学院'?(randomInt(3)==2 ? quarters[2+randomInt(2)] : undefined) : undefined),
                     day:      days[randomInt(days.length)],
                     periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
                 },
                 {
                     semester: semesters[1],
+                    quarter: (gr=='大学院'?(randomInt(3)==2 ? quarters[2+randomInt(2)] : undefined) : undefined),
                     day:      days[randomInt(days.length)],
                     periods:  [...periods].slice(pIndex, pIndex+randomInt(3, 1)),
                 }
             ],
             subject:  randomInt(dy * 10000 + 3000, dy * 10000),
             room:     dummyRooms[randomInt(dummyRooms.length)],
-            lecturers: selected
+            lecturers: selected,
+            credits: 2
         });
     }
     return dummy;

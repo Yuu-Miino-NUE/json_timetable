@@ -1,20 +1,27 @@
 type Semester = '前' | '後';
+type Quarter = 'Q1' | 'Q2' | 'Q3' | 'Q4';
 type Day = '月' | '火' | '水' | '木' | '金';
 type Periods = 1 | 2 | 3 | 4 | 5
+type Grade = '学部' | '大学院'
 interface TTEntryTimes {
     semester: Semester,
+    quarter?: Quarter,
     day: Day,
     periods: Periods[]
 }
 export interface TTEntry {
+    grade: Grade,
     year: number,
     times: TTEntryTimes[],
     subject: number,
     room: string,
-    lecturers: string[]
+    lecturers: string[],
+    credits: number
 }
 
+export const grades: Grade[] = ['学部', '大学院'];
 export const semesters: Semester[] = ['前', '後'];
+export const quarters: Quarter[] = ['Q1', 'Q2', 'Q3', 'Q4'];
 export const days: Day[] = ['月', '火', '水', '木', '金'];
 export const periods: Periods[] = [1, 2, 3, 4, 5];
 export type AndOr = 'and' | 'or';
@@ -110,9 +117,13 @@ export function writeFileOperate (
 export function writeFilter (
     divID: string,
     capitalState: boolean,
+    bachelorState: boolean,
+    masterState: boolean,
     onAORadioChange: (event: Event)=>void,
     onKeyup: (event: KeyboardEvent)=>void,
-    onCapital: (event: Event)=>void
+    onCapital: (event: Event)=>void,
+    onBachelor: (event: Event)=>void,
+    onMaster: (event: Event)=>void
 ) {
     const radioName = 'andOrRadios';
     const filter = '<div class="input-group">'+
@@ -124,6 +135,10 @@ export function writeFilter (
     )).join('')+
     '<input class="btn-check" type="checkbox" name="capital" id="capital" '+(capitalState?'checked':'')+'>'+
     '<label class="btn btn-outline-secondary" for="capital">大文字区別</label>'+
+    '<input class="btn-check" type="checkbox" name="bachelor" id="bachelor" '+(bachelorState?'checked':'')+'>'+
+    '<label class="btn btn-outline-success" for="bachelor">学部</label>'+
+    '<input class="btn-check" type="checkbox" name="master" id="master" '+(masterState?'checked':'')+'>'+
+    '<label class="btn btn-outline-primary" for="master">大学院</label>'+
     '</div>';
 
     const divDom = document.getElementById(divID);
@@ -131,12 +146,16 @@ export function writeFilter (
 
     const filterInputDom = document.getElementById("filterInput");
     const capitalDom = document.getElementById("capital");
+    const bachelorDom = document.getElementById("bachelor");
+    const masterDom = document.getElementById("master");
 
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
         dom.addEventListener('change', onAORadioChange)
     ));
     if (filterInputDom) filterInputDom.addEventListener("keyup", onKeyup);
     if (capitalDom) capitalDom.addEventListener("change", onCapital);
+    if (bachelorDom) bachelorDom.addEventListener("change", onBachelor);
+    if (masterDom) masterDom.addEventListener("change", onMaster);
 }
 
 /* 表示切替ラジオボタン HTML  */
@@ -187,15 +206,17 @@ export function writeCalendar(
     ));
 
     /* カレンダーの各科目のフォーマット */
-    function subjectInCal (data: TTEntry, index: number) {
-        return '<div class="card border-0 m-0 mb-0"><div class="card-body p-1">'+
+    const subjectInCal = (data: TTEntry, index: number) => (
+        '<div class="card '+(data.grade=='学部'? 'text-white bg-success':'text-white bg-primary')+' border-1 m-0 mb-0" role="button" '+
+        'data-bs-toggle="modal" data-bs-target="#modal'+index+'"><div class="card-body p-1">'+
         '<h6 class="card-title mb-0">'+data.subject+'</h6>'+
-        '<p class="card-text small">'+data.lecturers.join(', ')+'<br>'+
-        data.room+' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
-        'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
+        '<p class="card-text small">'+data.lecturers.join(', ')+'<br>@'+
+        data.room+
+        // ' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
+        // 'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
         '</p>'+
-        '</div></div>';
-    }
+        '</div></div>'
+    );
 
     const calBody = ysPair.map((ys, ysi)=>(
         '<div class="mb-5 d-block">'+ // E
@@ -222,7 +243,7 @@ export function writeCalendar(
         '</div>' // E
     )).join('');
     const divDom = document.getElementById(divID);
-    if (divDom) divDom.innerHTML = calBody;
+    if (divDom) divDom.innerHTML = (keyFilter.length == 0 ? '<div class="text-muted text-center">該当データはありません．</div>' : calBody);
 }
 
 /* リスト表示 HTML */
@@ -234,6 +255,7 @@ export function writeList(
     onSort: (event: Event)=>void
 ) {
     const listHeaderLabels: Array<{key: keyof(TTEntry), label: string}> = [
+        {key: 'grade',      label: '対象'},
         {key: 'year',       label: '年度'},
         {key: 'times',      label: '学期・曜日・時限'},
         {key: 'subject',    label: '科目番号'},
@@ -241,7 +263,7 @@ export function writeList(
         {key: 'room',       label: '教室'}
     ];
     const listHeader =
-        '<thead>' + listHeaderLabels.map((value)=>(
+        '<thead class="text-center">' + listHeaderLabels.map((value)=>(
             '<th id="lh_'+value.key+'" scope="col">'+value.label+'</th>'
         )).join('') +
         '</thead>';
@@ -254,10 +276,13 @@ export function writeList(
                 ret = "（"+js.times.map(t=>Object.values(t).join('・')).join('，')+"）";
             } else if (value.key == 'lecturers') {
                 ret = js[value.key].join(', ');
-            } else {
+            } else if (value.key == 'grade') {
+                ret = '<span class="badge '+(js[value.key]=='学部'?'bg-success':'bg-primary')+'">'+js[value.key]+'</span>';
+            }
+            else {
                 ret = String(js[value.key]);
             }
-            return '<td>'+ret+'</td>';
+            return '<td class="text-center">'+ret+'</td>';
         }).join('')+
         '</tr>'):''
     )).join('')+'</tbody>';
@@ -273,8 +298,10 @@ export function writeList(
     )).join(' ')+'</div>';
 
     const divDom = document.getElementById(divID);
-    if (divDom) divDom.innerHTML = '<div class="mb-3 no-print">'+sortBtns+'</div>'+
-    '<table class="table table-hover print">' + listHeader + listBody + '</table>';
+    if (divDom) divDom.innerHTML = (keyFilter.length == 0 ? '<div class="text-muted text-center">該当データはありません．</div>' :
+        '<div class="mb-3 no-print">'+sortBtns+'</div>'+
+        '<table class="table table-hover print">' + listHeader + listBody + '</table>'
+    );
     document.querySelectorAll("input[name='"+radioName+"']").forEach((dom)=>(
         dom.addEventListener('change', onSort)
     ));
