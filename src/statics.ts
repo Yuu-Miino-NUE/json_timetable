@@ -206,16 +206,16 @@ export function writeCalendar(
     ));
 
     /* カレンダーの各科目のフォーマット */
-    const subjectInCal = (data: TTEntry, index: number, dupLecs: Set<string>) => (
-        '<div class="card '+(dupLecs.size != 0? '' : (data.grade=='学部'? 'text-white bg-success':'text-white bg-primary'))+' border-1 m-0 mb-0" role="button" '+
+    const subjectInCal = (data: TTEntry, index: number, dupLecs: Set<string>, dupRooms: Set<string>) => (
+        '<div class="card '+(dupLecs.size != 0 || dupRooms.size != 0? '' : (data.grade=='学部'? 'text-white bg-success':'text-white bg-primary'))+' border-1 m-0 mb-0" role="button" '+
         'data-bs-toggle="modal" data-bs-target="#modal'+index+'"><div class="card-body p-1">'+
         '<h6 class="card-title mb-0">'+
-        (dupLecs.size != 0 ? '<span class="spinner-grow spinner-grow-sm text-danger me-1" role="status"></span>' : '')+
+        (dupLecs.size != 0 || dupRooms.size != 0 ? '<span class="spinner-grow spinner-grow-sm text-danger me-1" role="status"></span>' : '')+
         data.subject+'</h6>'+
         '<p class="card-text small">'+data.lecturers.map(l=>(
             '<span class="'+(dupLecs.has(l) ? 'text-danger fw-bold':'')+'">'+l+'</span>'
         )).join(', ')+'<br>@'+
-        data.room+
+        '<span class="'+(dupRooms.size==0?'':'text-danger fw-bold')+'">'+data.room+'</span>'+
         // ' <i class="bi bi-pencil-square text-primary stretched-link no-print" role="button" '+
         // 'data-bs-toggle="modal" data-bs-target="#modal'+index+'"></i>'+
         '</p>'+
@@ -235,19 +235,26 @@ export function writeCalendar(
             '<div class="col row">'+ // A
             days.map(d=>{
                 const lecs: Set<string> = new Set();
+                const rooms: Set<string> = new Set();
                 return '<div class="col border p-0">'+
                 [...json.keys()].filter(k=>
                     (keyFilter.includes(k) && json[k].year==ys.year && json[k].times.some(jt=>jt.semester==semesters[ys.semesIdx] && jt.day==d && jt.periods.includes(p)))
                 ).map(k=>{
-                    const dups: Set<string> = new Set();
+                    const dupLecs: Set<string> = new Set();
+                    const dupRooms: Set<string> = new Set();
                     json[k].lecturers.forEach(l=>{
                         if (!lecs.has(l)) {
                             lecs.add(l);
                         } else {
-                            dups.add(l);
+                            dupLecs.add(l);
                         }
                     });
-                    return subjectInCal(json[k], k, dups);
+                    if (!rooms.has(json[k].room)) {
+                        rooms.add(json[k].room);
+                    } else {
+                        dupRooms.add(json[k].room);
+                    }
+                    return subjectInCal(json[k], k, dupLecs, dupRooms);
                 }).join('')+'</div>'
             }).join('')+
             '</div>'+ // A
